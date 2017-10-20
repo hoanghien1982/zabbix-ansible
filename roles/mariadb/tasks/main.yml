@@ -1,0 +1,12 @@
+- name: Install mariadb 10.2 key
+  apt_key: keyserver=keyserver.ubuntu.com id=0xF1656F24C74CD1D8
+
+- name: Enable mariadb 10.2 repository
+  apt_repository: repo='deb [arch=amd64,i386,ppc64el] http://sgp1.mirrors.digitalocean.com/mariadb/repo/10.2/ubuntu xenial main' state=present
+
+- name: Install mariadb 10.2
+  apt: name=mariadb-server state=latest update_cache=yes
+
+- name: Restart mariadb
+  become: yes
+  service: name=mysql state=restarted

@@ -1,0 +1,25 @@
+- name: Install a .deb zabbix package
+  apt:
+    deb: http://repo.zabbix.com/zabbix/3.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_3.4-1+xenial_all.deb
+
+- name: Install zabbix 3.4 with mib
+  become: true
+  apt: pkg={{ item }} state=installed update_cache=true
+  with_items:
+  - zabbix-server-mysql
+  - zabbix-frontend-php 
+  - snmp
+  - snmp-mibs-downloader
+  - php7.0-bcmath
+  - php7.0-mbstring 
+
+- name: Enable zabbix server service
+  systemd:
+    name: zabbix-server
+    state: started
+    enabled: True
+
+
+- name: Restart webserver
+  become: yes
+  service: name=apache2 state=restarted

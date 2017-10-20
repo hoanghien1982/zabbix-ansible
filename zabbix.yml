@@ -1,0 +1,20 @@
+- hosts: monitor
+  become: true
+  gather_facts: false
+  pre_tasks:
+  - name: Install python2 for Ansible
+    raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+    register: output
+    changed_when: output.stdout != ""
+  - name: update whole system
+    apt:
+      upgrade: dist
+      update_cache: yes
+      autoremove: yes
+  - name: Gathering Facts
+    setup:
+  roles:
+    - mariadb
+    - zabbix
+  vars:
+    mysql_root_password: "mypass"
